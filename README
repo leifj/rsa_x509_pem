@@ -1,0 +1,19 @@
+rsa_x509_pem
+Handle OpenSSL PEM RSA keys and x509 certificates in native Python.
+
+© 2011 Andrew D. Yates
+andrewyates.name@gmail.com
+
+https://andrewdyates@github.com/andrewdyates/rsa_x509_pem.git
+https://github.com/andrewdyates
+
+========
+
+Sources:
+
+RSA implementation: PyCrypto
+http://www.dlitz.net/software/pycrypto/
+
+PEM implementation: PyASN1
+http://pyasn1.sourceforge.net/
+
