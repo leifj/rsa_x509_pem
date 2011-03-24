@@ -239,6 +239,8 @@ def parse(data):
       ['modulus'] = int of included RSA public key
       ['publicExponent'] = int of included RSA public key
       ['subject'] = str of compiled subject in rfc2253 format
+      ['body'] = str of X509 DER binary in base64
+      ['type'] = str of "X509 PRIVATE"
   """
   # initialize empty return dictionary
   dict = {}
@@ -252,8 +254,10 @@ def parse(data):
     else:
       # include this b64 data for decoding
       lines.append(s.strip())
-      
-  raw_data = ''.join(lines).decode("base64")
+
+
+  body = ''.join(lines)
+  raw_data = body.decode("base64")
 
   cert = decoder.decode(raw_data, asn1Spec=Certificate())[0]
 
@@ -279,7 +283,12 @@ def parse(data):
   attrs = RX_SUBJECT_ATTR.findall(subject_text)
   dict['subject'] = rfc2253_name(attrs)
 
+  # add base64 encoding and type to return dictionary
+  dict['body'] = body
+  dict['type'] = "X509 CERTIFICATE"
+
   return dict
+
 
 def dict_to_tuple(dict):
   """Return RSA PyCrypto tuple from parsed X509 dict with public RSA key.

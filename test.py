@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 # Copyright ©2011 Andrew D Yates
 # andrewyates.name@gmail.com
-"""Test cryptographic PEM reader modules using example files.
+"""Test RSA cryptographic PEM reader modules using example files.
 """
-import re
 import unittest
 
 from Crypto.PublicKey import RSA
 
 import rsa_pem
 import x509_pem
+import __init__ as top
+
 
 KEY_FILE_PAIRS = (
   ('keys/privkey_1_rsa_512.pem', 'keys/rsa_cert_1_512.pem'),
@@ -28,12 +29,16 @@ RSA_PARTS = (
   ('exponent1', long),
   ('exponent2', long),
   ('coefficient', long),
+  ('body', basestring),
+  ('type', basestring),
   )
 
 X509_PARTS = (
   ('modulus', long),
   ('publicExponent', long),
   ('subject', basestring),
+  ('body', basestring),
+  ('type', basestring),
   )
 
 X509_SUBJECT = "C=US,ST=Ohio,L=Columbus,CN=Andrew Yates,O=http://github.com/andrewdyates"
@@ -62,6 +67,9 @@ class TestParse(unittest.TestCase):
       self.assertTrue(data)
       dict = rsa_pem.parse(data)
       self.assertTrue(dict)
+      # 20 chars is enough of a sanity check
+      self.assertTrue(dict['body'][:20] in data)
+      self.assertEqual(dict['type'], "RSA PRIVATE")
 
   def test_key_parse_elements(self):
     for key, cert in KEY_FILE_PAIRS:
@@ -77,15 +85,18 @@ class TestParse(unittest.TestCase):
       self.assertTrue(data)
       dict = x509_pem.parse(data)
       self.assertTrue(dict)
+      # 20 chars is enough of a sanity check
+      self.assertTrue(dict['body'][:20] in data)
+      self.assertEqual(dict['type'], "X509 CERTIFICATE")
 
   def test_cert_parse_elements(self):
     for key, cert in KEY_FILE_PAIRS:
       data = self.data[cert]
       dict = x509_pem.parse(data)
+      self.assertEqual(dict['subject'], X509_SUBJECT)
       for part, dtype in X509_PARTS:
         self.assertTrue(part in dict)
         self.assertTrue(isinstance(dict[part], dtype))
-        self.assertEqual(dict['subject'], X509_SUBJECT)
 
 
 class TestGenKey(unittest.TestCase):
@@ -261,6 +272,41 @@ class TestRSAKey(unittest.TestCase):
       self.assertTrue("Ciphertext too large" in e, e)
     else:
       self.assertNotEqual(MSG1, plain)
+
+
+class TestTop(unittest.TestCase):
+  
+  def test_rsa_parse(self):
+    self.assertEqual(top.rsa_parse, rsa_pem.parse)
+    data = open(KEY_FILE_PAIRS[0][0]).read()
+    rsa_dict = top.parse(data)
+    self.assertTrue(rsa_dict)
+    
+  def test_x509_parse(self):
+    self.assertEqual(top.x509_parse, x509_pem.parse)
+    data = open(KEY_FILE_PAIRS[0][1]).read()
+    x509_dict = top.parse(data)
+    self.assertTrue(x509_dict)
+
+  def test_rsa_dict_to_key(self):
+    data = open(KEY_FILE_PAIRS[0][0]).read()
+    rsa_dict = top.parse(data)
+    key = top.get_key(rsa_dict)
+    self.assertTrue(key)
+    self.assertTrue(key.e)
+    self.assertTrue(key.d)
+  
+  def test_x509_dict_to_key(self):
+    data = open(KEY_FILE_PAIRS[0][1]).read()
+    x509_dict = top.parse(data)
+    key = top.get_key(x509_dict)
+    self.assertTrue(key)
+    self.assertTrue(key.e)
+    # "lambda" suppresses exception until called by the test handler
+    self.assertRaises(AttributeError, lambda: key.d)
+
+  def test_RSA_obj(self):
+    self.assertEqual(top.RSAKey, RSA.RSAobj)
 
       
 def main():

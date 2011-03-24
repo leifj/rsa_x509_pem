@@ -7,6 +7,32 @@ andrewyates.name@gmail.com
 https://andrewdyates@github.com/andrewdyates/rsa_x509_pem.git
 https://github.com/andrewdyates
 
+See test.py for unit tests and additional sample usage.
+
+========
+
+SAMPLE USE:
+
+# Read "private_rsa_key.pem", make private RSA key, sign something, verify
+>>> data = open("private_rsa_key.pem").read()
+... key_dict = parse(data)
+... key = get_key(key_dict)
+... signature = key.sign("Hello.", None)
+... assert key.verify("Hello.", signature)
+
+# Read "rsa_cert.pem", make public RSA key, verify some signature, print
+>>> data = open("rsa_cert.pem").read()
+... cert_dict = parse(data)
+... key = get_key(cert_dict)
+... assert key.verify("Hello.", my_signature)
+... print cert_dict["subject"]
+... print cert_dict["body"]
+
+
+RUN UNIT TESTS:
+
+$ python test.py
+
 ========
 
 Sources:

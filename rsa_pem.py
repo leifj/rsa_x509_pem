@@ -59,13 +59,12 @@ def parse(data, password=None):
   """Return a simple dictionary of labeled numeric key elements from key data.
 
   TO DO:
-    detect and handle RSA X509 certificates
     support DSA signatures
     include support for encrypted private keys e.g. DES3
 
   Args:
     data: str of bytes read from PEM encoded key file
-    password: str of password to decrypt key [optional]
+    password: str of password to decrypt key [not supported]
   Returns:
     {str: value} of labeled RSA key elements s.t.:
       ['version'] = int of 0 or 1 meaning "two-key" or "multi" respectively
@@ -77,6 +76,8 @@ def parse(data, password=None):
       ['exponent1'] = int of RSA key value `dp` [optional]
       ['exponent2'] = int of RSA key value `dq` [optional]
       ['coefficient'] = int of RSA key value `u` or `inverseQ` [optional]
+      ['body'] = str of key DER binary in base64
+      ['type'] = str of "RSA PRIVATE"
   """
   lines = []
   type = None
@@ -101,8 +102,9 @@ def parse(data, password=None):
     else:
       # include this b64 data for decoding
       lines.append(s.strip())
-      
-  raw_data = ''.join(lines).decode("base64")
+
+  body = ''.join(lines)
+  raw_data = body.decode("base64")
 
   # Private Key cipher (Not Handled)
   if encryption:
@@ -117,7 +119,13 @@ def parse(data, password=None):
   
   key = decoder.decode(raw_data, asn1Spec=asn1Spec)[0]
 
-  return key.dict()
+  # generate return dict base from key dict
+  dict = key.dict()
+  # add base64 encoding and type to return dictionary
+  dict['body'] = body
+  dict['type'] = "RSA PRIVATE"
+
+  return dict
 
 
 def dict_to_tuple(dict):
