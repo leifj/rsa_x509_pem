@@ -1,6 +1,6 @@
 # DER encoder
-from pyasn1.type import univ
-from pyasn1.codec.cer import encoder
+from ...type import univ
+from ..cer import encoder
 
 class SetOfEncoder(encoder.SetOfEncoder):
     def _cmpSetComponents(self, c1, c2):

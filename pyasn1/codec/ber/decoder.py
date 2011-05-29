@@ -1,8 +1,8 @@
 # BER decoder
 import types
-from pyasn1.type import tag, univ, char, useful
-from pyasn1.codec.ber import eoo
-from pyasn1 import error
+from ...type import tag, univ, char, useful
+from ..ber import eoo
+from ... import error
 
 class AbstractDecoder:
     protoComponent = None

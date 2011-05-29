@@ -2,8 +2,8 @@
 import string
 import types
 import operator
-from pyasn1.type import base, tag, constraint, namedtype, namedval
-from pyasn1 import error
+import base, tag, constraint, namedtype, namedval
+from .. import error
 
 # "Simple" ASN.1 types (yet incomplete)
 

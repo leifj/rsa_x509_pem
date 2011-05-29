@@ -6,8 +6,8 @@ except ImportError:
 from operator import getslice, setslice, delslice
 from string import join
 from types import SliceType
-from pyasn1.type import constraint
-from pyasn1 import error
+import constraint
+from .. import error
 
 class Asn1Item: pass
 

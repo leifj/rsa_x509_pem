@@ -1,7 +1,7 @@
 # CER decoder
-from pyasn1.type import univ
-from pyasn1.codec.ber import decoder
-from pyasn1 import error
+from ...type import univ
+from ..ber import decoder
+from ... import error
 
 class BooleanDecoder(decoder.AbstractDecoder):
     protoComponent = univ.Boolean(0)

@@ -1,5 +1,5 @@
 # NamedType specification for constructed types
-from pyasn1 import error
+from .. import error
 
 class NamedType:
     isOptional = 0

@@ -1,8 +1,8 @@
 # BER encoder
 import string
-from pyasn1.type import base, tag, univ, char, useful
-from pyasn1.codec.ber import eoo
-from pyasn1 import error
+from ...type import base, tag, univ, char, useful
+from ..ber import eoo
+from ... import error
 
 class Error(Exception): pass
 

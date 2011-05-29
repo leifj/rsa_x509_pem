@@ -1,6 +1,6 @@
 # ASN.1 named integers
 from  types import TupleType
-from pyasn1 import error
+from .. import error
 
 __all__ = [ 'NamedValues' ]
 

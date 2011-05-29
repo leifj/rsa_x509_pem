@@ -6,7 +6,7 @@ except ImportError:
 from operator import getslice
 from types import SliceType
 from string import join
-from pyasn1 import error
+from .. import error
 
 tagClassUniversal = 0x00
 tagClassApplication = 0x40

@@ -13,7 +13,7 @@
 """
 import types
 import string
-from pyasn1.type import error
+from .. import error
 
 class AbstractConstraint:
     """Abstract base-class for constraint objects
