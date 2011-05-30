@@ -308,6 +308,33 @@ class TestTop(unittest.TestCase):
   def test_RSA_obj(self):
     self.assertEqual(top.RSAKey, RSA.RSAobj)
 
+class TestFunctionWrappers(unittest.TestCase):
+
+  def setUp(self):
+    self.pubkey = top.get_key(top.parse(open(KEY_FILE_PAIRS[0][1]).read()))
+    self.privkey = top.get_key(top.parse(open(KEY_FILE_PAIRS[0][0]).read()))
+
+  def test_public(self):
+    f_my_public = top.f_public(self.pubkey)
+    self.assertTrue(f_my_public(MSG1))
+    f_my_public2 = top.f_public(self.privkey)
+    self.assertTrue(f_my_public2(MSG1))
+
+  def test_private(self):
+    f_my_private = top.f_private(self.privkey)
+    self.assertTrue(f_my_private(MSG1))
+    f_my_private2 = top.f_private(self.pubkey)
+    # cannot use private function on a public key
+    self.assertRaises(Exception, f_my_private2, MSG1)
+
+  def test_inverse(self):
+    f_my_private = top.f_private(self.privkey)
+    f_my_public = top.f_public(self.privkey)
+    self.assertEqual(MSG1, f_my_public(f_my_private(MSG1)))
+    self.assertEqual(MSG1, f_my_private(f_my_public(MSG1)))
+    self.assertNotEqual(MSG1, f_my_public(f_my_public(MSG1)))
+    self.assertNotEqual(MSG1, f_my_private(f_my_private(MSG1)))
+
       
 def main():
   unittest.main()

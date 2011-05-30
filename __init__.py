@@ -51,3 +51,23 @@ def get_key(parse_dict):
     raise Exception("parse_dict type '%s' not supported." % parse_dict['type'])
   key = RSA.construct(key_tuple)
   return key
+
+def f_public(key):
+  """Return a convenient public key function.
+
+  Args:
+    key: `RSAKey` as returned by get_key(parse_dict).
+  Returns:
+    function(msg) => str of RSA() using `key`
+  """
+  return lambda x: key.encrypt(x, None)[0]
+
+def f_private(key):
+  """Return a convenient public key function.
+
+  Args:
+    key: `RSAKey` as returned by get_key(parse_dict).
+  Returns:
+    function(msg) => str of RSA^-1() using `key`
+  """
+  return key.decrypt

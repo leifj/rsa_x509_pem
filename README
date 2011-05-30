@@ -28,6 +28,13 @@ SAMPLE USE:
 ... print cert_dict["subject"]
 ... print cert_dict["body"]
 
+# Return "nice" public and private key functions from a key object
+>>> f_my_public = f_public(key)
+... f_my_private = f_private(key)
+... msg = "hello"
+... assert msg == f_my_public(f_my_public(msg))
+... assert msg == f_my_private(f_my_public(msg))
+
 
 RUN UNIT TESTS:
 
